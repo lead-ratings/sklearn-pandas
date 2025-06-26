@@ -46,8 +46,8 @@ def _get_feature_names(estimator):
     """
     if hasattr(estimator, 'classes_'):
         return estimator.classes_
-    elif hasattr(estimator, 'get_feature_names'):
-        return estimator.get_feature_names()
+    elif hasattr(estimator, 'get_feature_names_out'):
+        return estimator.get_feature_names_out()
     return None
 
 

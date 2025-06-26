@@ -1,6 +1,5 @@
 import six
 from sklearn.pipeline import _name_estimators, Pipeline
-from sklearn.utils import tosequence
 
 
 def _call_fit(fit_method, X, y=None, **kwargs):
@@ -41,8 +40,8 @@ class TransformerPipeline(Pipeline):
             raise ValueError(
                 "Provided step names are not unique: %s" % (names,))
 
-        # shallow copy of steps
-        self.steps = tosequence(steps)
+        assert isinstance(steps, list)
+        self.steps = steps
         estimator = estimators[-1]
 
         for e in estimators:

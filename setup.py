@@ -39,10 +39,10 @@ setup(
     packages=['sklearn_pandas'],
     keywords=['scikit', 'sklearn', 'pandas'],
     install_requires=[
-      'scikit-learn>=0.23.0',
+      'scikit-learn>=1.5.0',
       'scipy>=1.5.1',
-      'pandas>=1.1.4',
-      'numpy>=1.18.1'
+      'pandas>=2.0.0',
+      'numpy>=2.0.0'
     ],
     tests_require=['pytest', 'mock'],
     cmdclass={'test': PyTest},

@@ -271,7 +271,7 @@ def test_simple_df(simple_dataframe):
     df = simple_dataframe
     mapper = DataFrameMapper([('a', None)], df_out=True)
     transformed = mapper.fit_transform(df)
-    assert type(transformed) == pd.DataFrame
+    assert isinstance(transformed, pd.DataFrame)
     assert len(transformed["a"]) == len(simple_dataframe["a"])
 
 
@@ -614,7 +614,7 @@ def test_get_col_subset_single_column_array(simple_dataframe):
     mapper = DataFrameMapper(None)
     array = mapper._get_col_subset(simple_dataframe, "a")
 
-    assert type(array) == np.ndarray
+    assert isinstance(array, np.ndarray)
     assert array.shape == (len(simple_dataframe["a"]),)
 
 
@@ -626,7 +626,7 @@ def test_get_col_subset_single_column_list(simple_dataframe):
     mapper = DataFrameMapper(None)
     array = mapper._get_col_subset(simple_dataframe, ["a"])
 
-    assert type(array) == np.ndarray
+    assert isinstance(array, np.ndarray)
     assert array.shape == (len(simple_dataframe["a"]), 1)
 
 
@@ -860,7 +860,7 @@ def test_sparse_features(simple_dataframe):
     ], sparse=True)
     dmatrix = mapper.fit_transform(df)
 
-    assert type(dmatrix) == sparse.csr.csr_matrix
+    assert isinstance(dmatrix, sparse.csr.csr_matrix)
 
 
 def test_sparse_off(simple_dataframe):
@@ -874,7 +874,7 @@ def test_sparse_off(simple_dataframe):
     ], sparse=False)
 
     dmatrix = mapper.fit_transform(df)
-    assert type(dmatrix) != sparse.csr.csr_matrix
+    assert not isinstance(dmatrix, sparse.csr.csr_matrix)
 
 
 def test_fit_with_optional_y_arg(complex_dataframe):

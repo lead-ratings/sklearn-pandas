@@ -29,21 +29,22 @@ class PyTest(TestCommand):
         raise SystemExit(errno)
 
 
-setup(name='sklearn-pandas',
-      version=__version__,
-      description='Pandas integration with sklearn',
-      maintainer='Ritesh Agrawal',
-      maintainer_email='ragrawal@gmail.com',
-      url='https://github.com/scikit-learn-contrib/sklearn-pandas',
-      packages=['sklearn_pandas'],
-      keywords=['scikit', 'sklearn', 'pandas'],
-      install_requires=[
-          'scikit-learn>=0.23.0',
-          'scipy>=1.5.1',
-          'pandas>=1.1.4',
-          'numpy>=1.18.1'
-      ],
-      tests_require=['pytest', 'mock'],
-      cmdclass={'test': PyTest},
-      license='MIT License'
+setup(
+    name='sklearn-pandas',
+    version=__version__,
+    description='Pandas integration with sklearn',
+    maintainer='Ritesh Agrawal',
+    maintainer_email='ragrawal@gmail.com',
+    url='https://github.com/scikit-learn-contrib/sklearn-pandas',
+    packages=['sklearn_pandas'],
+    keywords=['scikit', 'sklearn', 'pandas'],
+    install_requires=[
+      'scikit-learn>=0.23.0',
+      'scipy>=1.5.1',
+      'pandas>=1.1.4',
+      'numpy>=1.18.1'
+    ],
+    tests_require=['pytest', 'mock'],
+    cmdclass={'test': PyTest},
+    license='MIT License'
 )

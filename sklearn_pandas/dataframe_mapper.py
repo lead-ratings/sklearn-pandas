@@ -291,7 +291,7 @@ class DataFrameMapper(BaseEstimator, TransformerMixin):
             else:
                 names = _get_feature_names(transformer)
 
-            if names is not None and len(names) == num_cols:
+            if (names is not None) and (len(names) == num_cols):
                 output = [f"{name}_{o}" for o in names]
                 # otherwise, return name concatenated with '_1', '_2', etc.
             else:
@@ -299,13 +299,13 @@ class DataFrameMapper(BaseEstimator, TransformerMixin):
         else:
             output = [name]
 
-        if prefix == suffix == "":
-            return output
+        if (prefix != "") or (suffix != ""):
+            output = [
+                f'{prefix}{x}{suffix}'
+                for x in output
+            ]
 
-        return [
-            f'{prefix}{x}{suffix}'
-            for x in output
-        ]
+        return output
 
     def get_dtypes(self, extracted):
         dtypes_features = [self.get_dtype(ex) for ex in extracted]

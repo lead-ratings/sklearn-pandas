@@ -1,6 +1,3 @@
-import pytest
-from unittest.mock import Mock
-import numpy as np
 import pandas as pd
 from sklearn_pandas import DataFrameMapper
 from sklearn.compose import make_column_selector
@@ -22,8 +19,16 @@ df = pd.DataFrame({
     'petal width (cm)': [1.0, 2.0, 3.0]
 })
 t = DataFrameMapper([
-    (make_column_selector(dtype_include=float), StandardScaler(), {'alias': 'x'}),
-    (GetStartWith('petal'), None, {'alias': 'petal'})
+    (
+        make_column_selector(dtype_include=float),
+        StandardScaler(),
+        {'alias': 'x'},
+    ),
+    (
+        GetStartWith('petal'),
+        None,
+        {'alias': 'petal'},
+    )
 ], df_out=True, default=False)
 
 t.fit(df)

@@ -4,7 +4,6 @@ import pandas as pd
 import numpy as np
 from scipy import sparse
 from sklearn.base import BaseEstimator, TransformerMixin
-from .cross_validation import DataWrapper
 from .pipeline import make_transformer_pipeline, _call_fit, TransformerPipeline
 from . import logger
 
@@ -54,12 +53,11 @@ def _get_feature_names(estimator):
 
 @contextlib.contextmanager
 def add_column_names_to_exception(column_names):
-    # Stolen from https://stackoverflow.com/a/17677938/356729
     try:
         yield
     except Exception as ex:
         if ex.args:
-            msg = u'{}: {}'.format(column_names, ex.args[0])
+            msg = f'{column_names}: {ex.args[0]}'
         else:
             msg = text_type(column_names)
         ex.args = (msg,) + ex.args[1:]
@@ -126,7 +124,8 @@ class DataFrameMapper(BaseEstimator, TransformerMixin):
         """
         if isinstance(self.features, list):
             self.built_features = [
-                _build_feature(*f, X=X) for f in self.features
+                _build_feature(*f, X=X)
+                for f in self.features
             ]
         else:
             self.built_features = _build_feature(*self.features, X=X)
@@ -156,9 +155,14 @@ class DataFrameMapper(BaseEstimator, TransformerMixin):
         and transform steps.
         """
         X_columns = list(X.columns)
-        return [column for column in X_columns if
-                column not in self._selected_columns
-                and column not in self.drop_cols]
+        return [
+            column
+            for column in X_columns
+            if (
+                (column not in self._selected_columns) and
+                (column not in self.drop_cols)
+            )
+        ]
 
     def __setstate__(self, state):
         # compatibility for older versions of sklearn-pandas
@@ -210,9 +214,6 @@ class DataFrameMapper(BaseEstimator, TransformerMixin):
         if isinstance(X, list):
             X = [x[cols] for x in X]
             X = pd.DataFrame(X)
-
-        elif isinstance(X, DataWrapper):
-            X = X.df  # fetch underlying data
 
         if return_vector:
             t = X[cols[0]]
@@ -301,12 +302,18 @@ class DataFrameMapper(BaseEstimator, TransformerMixin):
         if prefix == suffix == "":
             return output
 
-        return ['{}{}{}'.format(prefix, x, suffix) for x in output]
+        return [
+            f'{prefix}{x}{suffix}'
+            for x in output
+        ]
 
     def get_dtypes(self, extracted):
         dtypes_features = [self.get_dtype(ex) for ex in extracted]
-        return [dtype for dtype_feature in dtypes_features
-                for dtype in dtype_feature]
+        return [
+            dtype
+            for dtype_feature in dtypes_features
+            for dtype in dtype_feature
+        ]
 
     def get_dtype(self, ex):
         if isinstance(ex, np.ndarray) or sparse.issparse(ex):
@@ -340,7 +347,10 @@ class DataFrameMapper(BaseEstimator, TransformerMixin):
                     if do_fit and hasattr(transformers, 'fit_transform'):
                         t1 = datetime.now()
                         Xt = _call_fit(transformers.fit_transform, Xt, y)
-                        logger.info(f"[FIT_TRANSFORM] {columns}: {_elapsed_secs(t1)} secs")  # NOQA
+                        logger.info(
+                            f"[FIT_TRANSFORM] {columns}: "
+                            f"{_elapsed_secs(t1)} secs"
+                        )
                     else:
                         if do_fit:
                             t1 = datetime.now()
@@ -350,7 +360,8 @@ class DataFrameMapper(BaseEstimator, TransformerMixin):
 
                         t1 = datetime.now()
                         Xt = transformers.transform(Xt)
-                        logger.info(f"[TRANSFORM] {columns}: {_elapsed_secs(t1)} secs")  # NOQA
+                        logger.info(
+                            f"[TRANSFORM] {columns}: {_elapsed_secs(t1)} secs")
 
             extracted.append(_handle_feature(Xt))
 

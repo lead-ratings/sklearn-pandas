@@ -47,14 +47,17 @@ class TransformerPipeline(Pipeline):
         for e in estimators:
             if (not (hasattr(e, "fit") or hasattr(e, "fit_transform")) or not
                     hasattr(e, "transform")):
-                raise TypeError("All steps of the chain should "
-                                "be transforms and implement fit and transform"
-                                " '%s' (type %s) doesn't)" % (e, type(e)))
+                raise TypeError(
+                    f"All steps of the chain should "
+                    f"be transforms and implement fit and transform "
+                    f"'{e}' (type {type(e)}) doesn't)"
+                )
 
         if not hasattr(estimator, "fit"):
-            raise TypeError("Last step of chain should implement fit "
-                            "'%s' (type %s) doesn't)"
-                            % (estimator, type(estimator)))
+            raise TypeError(
+                f"Last step of chain should implement fit "
+                f"'{estimator}' (type {type(estimator)}) doesn't)"
+            )
 
     def _pre_transform(self, X, y=None, **fit_params):
         fit_params_steps = dict((step, {}) for step, _ in self.steps)

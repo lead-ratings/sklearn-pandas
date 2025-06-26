@@ -1,5 +1,3 @@
-# -*- coding: utf8 -*-
-
 import pytest
 from unittest.mock import Mock
 from pandas import DataFrame

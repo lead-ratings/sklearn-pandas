@@ -59,6 +59,8 @@ class TransformerPipeline(Pipeline):
                 f"'{estimator}' (type {type(estimator)}) doesn't)"
             )
 
+        self._is_fitted = False
+
     def _pre_transform(self, X, y=None, **fit_params):
         fit_params_steps = dict((step, {}) for step, _ in self.steps)
         for pname, pval in six.iteritems(fit_params):
@@ -77,16 +79,30 @@ class TransformerPipeline(Pipeline):
     def fit(self, X, y=None, **fit_params):
         Xt, fit_params = self._pre_transform(X, y, **fit_params)
         _call_fit(self.steps[-1][-1].fit, Xt, y, **fit_params)
+        self._is_fitted = True
         return self
 
     def fit_transform(self, X, y=None, **fit_params):
         Xt, fit_params = self._pre_transform(X, y, **fit_params)
         if hasattr(self.steps[-1][-1], 'fit_transform'):
-            return _call_fit(self.steps[-1][-1].fit_transform,
-                             Xt, y, **fit_params)
+            result = _call_fit(
+                self.steps[-1][-1].fit_transform,
+                Xt,
+                y,
+                **fit_params,
+            )
         else:
-            return _call_fit(self.steps[-1][-1].fit,
-                             Xt, y, **fit_params).transform(Xt)
+            result = _call_fit(
+                self.steps[-1][-1].fit,
+                Xt,
+                y,
+                **fit_params
+            ).transform(Xt)
+        self._is_fitted = True
+        return result
+
+    def __sklearn_is_fitted__(self):
+        return getattr(self, '_is_fitted')
 
 
 def make_transformer_pipeline(*steps):
